@@ -69,3 +69,7 @@ _site/
 vendor/
 
 venv/
+
+# IDE
+.idea
+**/*/.idea

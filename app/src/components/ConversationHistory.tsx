@@ -65,6 +65,8 @@ export default function ConversationHistory({
       if (error) {
         throw error;
       }
+
+      console.log('Conversations returned', data)
       return data;
     },
   });

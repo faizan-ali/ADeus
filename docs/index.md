@@ -5,13 +5,15 @@ nav_order: 1
 ---
 
 # Adeus Documentation
+
 {: .no_toc }
 
 ## Table of contents
+
 {: .no_toc .text-delta }
 
 1. TOC
-{:toc}
+   {:toc}
 
 ## Introduction
 
@@ -27,7 +29,7 @@ So, thank you for being here, and now, **let's get started!**
 
 In the upcoming world, Personal AI will become an integrated part of our daily lives, they will be with us all the time, and will know much about us as our closest friends - and therefore, with Adeus, we are making sure it is completely open-source, and that you can **own** you own data.
 
---- 
+---
 
 ## How Adeus is Built
 
@@ -43,10 +45,42 @@ Adeus consists of 3 parts:
    Supabase is an open source Firebase alternative, a "backend-as-a-service" - which allows you to setup a Postgres database, Authentication, Edge Functions, Vector embeddings, and more - for free (at first) and at extreme ease!
    - [!!] But more importantly - **it is open source, and you can choose to deploy and manage your own Supabase instance** - which us crucial for our mission: A truly open-source, personal AI.
 
-**Sequence:**
-<a href="https://github.com/adamcohenhillel/ADeus/blob/main/docs/guides/sequence.md">
-   <img src="./images/mermaid.png">
-</a>
+## Simplified Sequence
+
+```mermaid
+sequenceDiagram
+    participant user as User
+    participant device as device/raspi
+    participant chatbot as chatbot/phone
+box lightGreen supabase
+    participant supabase as supabase
+end
+box lightBlue openai
+    participant whisper as whisper
+    participant embeddings as embeddings
+    participant GPT as GPT
+end
+
+    title ADeus
+
+    user ->> device: speech
+    device ->> supabase: audio
+    supabase ->> whisper: audio
+    whisper ->> supabase: text(transcribed)
+    supabase ->> embeddings: text
+    embeddings -->> supabase: embeddings
+    supabase -->> supabase: store to db
+
+    user ->> chatbot: text(conversation)
+    chatbot ->> supabase: text(conversation)
+    supabase ->> embeddings: text(conversation)
+    embeddings -->> supabase: embeddings
+    supabase -->> supabase: db query(embeddings match)
+    supabase -->> GPT: prompt, text(conversation), matched db embeddings
+    GPT -->> supabase: response
+    supabase -->> chatbot: response
+    chatbot -->> user: response
+```
 
 ---
 
@@ -77,4 +111,3 @@ You can also check the [TODOs](https://github.com/adamcohenhillel/ADeus/blob/mai
 - [Adeus launch original Readme file](https://docs.adeus.ai/archive/launch_readme.html)
 
 ---
-

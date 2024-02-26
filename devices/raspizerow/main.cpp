@@ -277,7 +277,7 @@ void process_args(int argc, char* argv[]) {
 
         if (result.count("help")) {
             std::cout << options.help() << std::endl;
-            exit(0);
+            exit;
         }
 
         if (result.count("save")) {
@@ -299,7 +299,7 @@ int main(int argc, char* argv[])
     snd_pcm_format_t format = SND_PCM_FORMAT_S32_LE;
 
     // Open PCM device for recording
-    rc = snd_pcm_open(&capture_handle, "default", SND_PCM_STREAM_CAPTURE, 0);
+    rc = snd_pcm_open(&capture_handle, "plughw:0", SND_PCM_STREAM_CAPTURE, 0);
     assert(rc >= 0);
     if (rc < 0)
     {

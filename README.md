@@ -1,4 +1,7 @@
 <div align="center">
+# Orakul: Wrapper around Adeus for RAG Hackathon with a knowledge import feature through Carbon
+
+### Original README below
 
 # **Adeus**
 

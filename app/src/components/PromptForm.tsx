@@ -1,6 +1,7 @@
-import { SendHorizontal } from 'lucide-react';
-import React from 'react';
-import { Button } from './ui/button';
+import { SendHorizontal } from "lucide-react";
+import React from "react";
+import { Button } from "./ui/button";
+import { RecordButton } from "./RecordButton";
 
 export default function PromptForm({
   textareaRef,
@@ -31,21 +32,27 @@ export default function PromptForm({
           onChange={(e) => {
             setEntryData(e.target.value);
             if (textareaRef.current) {
-              textareaRef.current.style.height = 'auto';
+              textareaRef.current.style.height = "auto";
               textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
             }
           }}
           disabled={waitingForResponse}
           placeholder="What is on your mind?"
         ></textarea>
-        <Button
-          size={'icon'}
-          className="disabled:bg-muted/40 relative bottom-0 right-2 ml-auto rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={waitingForResponse || entryData.length == 0}
-          onClick={sendMessage}
-        >
-          <SendHorizontal size={20} />
-        </Button>
+        <div className="flex gap-2 flex-shrink absolute bottom-2 right-2">
+          <RecordButton
+            onInput={setEntryData}
+            className="disabled:bg-muted/40 rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+          />
+          <Button
+            size={"icon"}
+            className="disabled:bg-muted/40 rounded-lg transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={waitingForResponse || entryData.length == 0}
+            onClick={sendMessage}
+          >
+            <SendHorizontal size={20} />
+          </Button>
+        </div>
       </div>
     </div>
   );

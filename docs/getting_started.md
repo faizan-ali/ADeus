@@ -5,13 +5,15 @@ nav_order: 2
 ---
 
 # Getting Started (Setup)
+
 {: .no_toc }
 
 ## Table of contents
+
 {: .no_toc .text-delta }
 
 1. TOC
-{:toc}
+   {:toc}
 
 ---
 
@@ -61,7 +63,6 @@ We will use Supabase as our database (with vector search, pgvector), authenticat
 14. If you want access to tons of AI Models, both Open & Closed Source, set up your OpenRouter API Key. Go to [OpenRouter](https://openrouter.ai/) to get your API Key, then run `supabase secrets set OPENROUTER_API_KEY=<your-openrouter-api-key>`.
 
 If everything worked, we should now be able to start chatting with our personal AI via the app - so let's set that up!
-
 
 **Setup: Run with Ollama**
 

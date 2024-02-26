@@ -58,3 +58,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.cc-w-6 cc-rounded-md cc-p-1 cc-mr-5 cc-cursor-pointer {
+  display: none;
+}

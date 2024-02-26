@@ -1,92 +1,89 @@
-import { Preferences } from '@capacitor/preferences';
-import { SupabaseClient, User, createClient } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
+import { useOverlay } from '@/providers/OverlayProvider'
+import { Preferences } from '@capacitor/preferences'
+import { SupabaseClient, User, createClient } from '@supabase/supabase-js'
+import { useEffect, useState } from 'react'
 
 export function useSupabaseConfig() {
-  const [supabaseUrl, setSupabaseUrl] = useState('');
-  const [supabaseToken, setSupabaseToken] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [supabaseUrl, setSupabaseUrl] = useState('')
+  const [supabaseToken, setSupabaseToken] = useState('')
 
   useEffect(() => {
     async function fetchConfig() {
       try {
-        const supabaseUrlValue = await Preferences.get({ key: 'supabaseUrl' });
+        const supabaseUrlValue = await Preferences.get({ key: 'supabaseUrl' })
         const supabaseTokenValue = await Preferences.get({
-          key: 'supabaseToken',
-        });
+          key: 'supabaseToken'
+        })
 
         if (supabaseUrlValue.value) {
-          setSupabaseUrl(JSON.parse(supabaseUrlValue.value));
+          setSupabaseUrl(JSON.parse(supabaseUrlValue.value))
         }
         if (supabaseTokenValue.value) {
-          setSupabaseToken(JSON.parse(supabaseTokenValue.value));
+          setSupabaseToken(JSON.parse(supabaseTokenValue.value))
         }
       } catch (error) {
         // Handle any error that might occur during fetching
-        console.error(error);
-      } finally {
-        setLoading(false);
+        console.error(error)
       }
     }
 
-    fetchConfig();
-  }, []);
+    fetchConfig()
+  }, [])
 
-  const setSupabaseConfig = async (
-    newSupabaseUrl: string,
-    newSupabaseToken: string
-  ) => {
+  const setSupabaseConfig = async (newSupabaseUrl: string, newSupabaseToken: string) => {
     try {
       await Preferences.set({
         key: 'supabaseUrl',
-        value: JSON.stringify(newSupabaseUrl),
-      });
+        value: JSON.stringify(newSupabaseUrl)
+      })
       await Preferences.set({
         key: 'supabaseToken',
-        value: JSON.stringify(newSupabaseToken),
-      });
-      setSupabaseUrl(newSupabaseUrl);
-      setSupabaseToken(newSupabaseToken);
+        value: JSON.stringify(newSupabaseToken)
+      })
+      setSupabaseUrl(newSupabaseUrl)
+      setSupabaseToken(newSupabaseToken)
     } catch (error) {
       // Handle any error that might occur during setting
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
-  return { supabaseUrl, supabaseToken, setSupabaseConfig, loading };
+  return { supabaseUrl, supabaseToken, setSupabaseConfig }
 }
 
 export function useSupabaseClient() {
-  const { supabaseUrl, supabaseToken, loading } = useSupabaseConfig();
-  const [supabaseClient, setSupabaseClient] = useState<SupabaseClient>();
+  const { supabaseUrl, supabaseToken } = useSupabaseConfig()
+  const [supabaseClient, setSupabaseClient] = useState<SupabaseClient>()
 
   useEffect(() => {
     if (supabaseUrl && supabaseToken) {
-      const client = createClient(supabaseUrl, supabaseToken);
-      setSupabaseClient(client);
+      const client = createClient(supabaseUrl, supabaseToken)
+      setSupabaseClient(client)
     }
-  }, [supabaseUrl, supabaseToken]);
+  }, [supabaseUrl, supabaseToken])
 
-  return { supabaseClient, loading };
+  return supabaseClient
 }
 
 export function useSupabase() {
-  const { supabaseClient, loading } = useSupabaseClient();
-  const [user, setUser] = useState<User | null>(null);
+  const { setLoading } = useOverlay()
+  const supabaseClient = useSupabaseClient()
+  const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
-    if (!supabaseClient) return;
+    if (!supabaseClient) return
+    setLoading(true)
 
-    const { data: authListener } = supabaseClient.auth.onAuthStateChange(
-      async (event, session) => {
-        setUser(session?.user ?? null);
-      }
-    );
+    const { data: authListener } = supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    setLoading(false)
 
     return () => {
-      authListener?.subscription.unsubscribe();
-    };
-  }, [supabaseClient]);
+      authListener?.subscription.unsubscribe()
+    }
+  }, [supabaseClient])
 
-  return { user, supabaseClient, loading };
+  return { user, supabaseClient }
 }
